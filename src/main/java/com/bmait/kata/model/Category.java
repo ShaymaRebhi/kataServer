@@ -6,8 +6,11 @@ public enum Category {
 
     final boolean taxable;
 
+
     Category(boolean taxable) {
         this.taxable = taxable;
+
+
     }
 
     public boolean isTaxable() {

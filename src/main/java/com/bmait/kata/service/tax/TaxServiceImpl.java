@@ -1,6 +1,7 @@
 package com.bmait.kata.service.tax;
 
 
+import com.bmait.kata.model.Category;
 import com.bmait.kata.model.Product;
 import com.bmait.kata.model.Receipt;
 import com.bmait.kata.service.tax.validation.ValidationService;
@@ -10,8 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+
 import java.util.logging.Logger;
 
 
@@ -24,6 +24,8 @@ public class TaxServiceImpl implements TaxService {
 
     @Value("${basic.sales.tax}")
     private BigDecimal basicSalesTax;
+    @Value("${book.sales.tax}")
+    private BigDecimal booksalestax;
 
     @Value("${import.duty.tax}")
     private BigDecimal importDutyTax;
@@ -36,8 +38,9 @@ public class TaxServiceImpl implements TaxService {
     public TaxServiceImpl() {
     }
 
-    public TaxServiceImpl(BigDecimal basicSalesTax, BigDecimal importDutyTax, String roundScale) {
+    public TaxServiceImpl(BigDecimal basicSalesTax,BigDecimal booksalestax, BigDecimal importDutyTax, String roundScale) {
         this.basicSalesTax = basicSalesTax;
+        this.booksalestax=booksalestax;
         this.importDutyTax = importDutyTax;
         this.roundScale = roundScale;
     }
@@ -105,6 +108,9 @@ public class TaxServiceImpl implements TaxService {
         }
 
         if (product.getCategory().isTaxable()) {
+            if (product.getCategory().equals(Category.BOOK)){
+                tax = tax.add(booksalestax.divide(PERCENT_DIVISOR));
+            }else
             tax = tax.add(basicSalesTax.divide(PERCENT_DIVISOR));
         }
         return tax;
